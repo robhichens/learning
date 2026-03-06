@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bright Beginnings · Staff Training</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FDF6ED;
+    --warm-white: #FFFAF4;
+    --sand: #E8D9C0;
+    --terracotta: #C4623A;
+    --terracotta-light: #D97B52;
+    --terracotta-dark: #A84E2C;
+    --sage: #6B8F71;
+    --sage-light: #8FAF96;
+    --deep: #2C2416;
+    --mid: #6B5C45;
+    --light: #A8956E;
+    --success: #4A7C59;
+    --error: #B84040;
+    --gold: #C9952A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--deep);
+    min-height: 100vh;
+  }
+
+  /* ── SHARED HEADER ── */
+  .app-header {
+    background: var(--deep);
+    padding: 18px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .app-header .logo {
+    font-family: 'Playfair Display', serif;
+    color: var(--cream);
+    font-size: 1.25rem;
+    letter-spacing: 0.02em;
+  }
+  .app-header .logo span { color: var(--terracotta-light); }
+  .header-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--light);
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; min-height: calc(100vh - 60px); }
+  .screen.active { display: block; }
+
+  /* ── STAFF HOME ── */
+  .staff-hero {
+    background: linear-gradient(135deg, var(--deep) 0%, #3D3020 100%);
+    padding: 48px 32px 40px;
+    color: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+  .staff-hero::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    opacity: 0.12;
+  }
+  .staff-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: 20%;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: var(--sage);
+    opacity: 0.08;
+  }
+  .staff-hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 6px;
+    position: relative;
+  }
+  .staff-hero p { color: var(--sand); font-size: 0.95rem; position: relative; }
+  .staff-hero .site-badge {
+    display: inline-block;
+    background: var(--terracotta);
+    color: white;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    margin-bottom: 16px;
+    position: relative;
+  }
+
+  .progress-bar-wrap {
+    background: var(--deep);
+    padding: 20px 32px;
+    border-bottom: 1px solid var(--sand);
+  }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--mid);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .progress-label span:last-child { color: var(--terracotta); font-weight: 600; }
+  .progress-track {
+    background: var(--sand);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--terracotta), var(--gold));
+    border-radius: 3px;
+    transition: width 0.6s ease;
+  }
+
+  .modules-grid {
+    padding: 28px 24px;
+    display: grid;
+    gap: 16px;
+  }
+  .module-card {
+    background: white;
+    border-radius: 14px;
+    padding: 22px 24px;
+    border: 1.5px solid var(--sand);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .module-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(44,36,22,0.1); border-color: var(--terracotta); }
+  .module-card.completed { border-color: var(--sage); background: #F4FAF5; }
+  .module-card.locked { opacity: 0.55; cursor: not-allowed; }
+  .module-card.locked:hover { transform: none; box-shadow: none; border-color: var(--sand); }
+  .module-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .module-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    flex-shrink: 0;
+  }
+  .module-status {
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+  .status-new { background: #FFF0E8; color: var(--terracotta); }
+  .status-done { background: #E8F5EB; color: var(--success); }
+  .status-locked { background: var(--sand); color: var(--mid); }
+  .module-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    line-height: 1.3;
+  }
+  .module-meta {
+    font-size: 0.78rem;
+    color: var(--mid);
+    display: flex;
+    gap: 14px;
+  }
+  .module-meta span::before { margin-right: 4px; }
+
+  /* ── CERTIFICATE BANNER ── */
+  .cert-banner {
+    margin: 0 24px 16px;
+    background: linear-gradient(135deg, var(--gold), #E6A830);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+  .cert-banner:hover { transform: scale(1.01); }
+  .cert-banner .cert-icon { font-size: 2rem; }
+  .cert-banner h3 { font-family: 'Playfair Display', serif; color: white; font-size: 1rem; margin-bottom: 2px; }
+  .cert-banner p { color: rgba(255,255,255,0.85); font-size: 0.78rem; }
+
+  /* ── MODULE VIEWER ── */
+  .module-header {
+    background: var(--deep);
+    padding: 20px 24px;
+    color: var(--cream);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .back-btn {
+    background: rgba(255,255,255,0.12);
+    border: none;
+    color: var(--cream);
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s;
+  }
+  .back-btn:hover { background: rgba(255,255,255,0.2); }
+  .module-header-info h2 { font-family: 'Playfair Display', serif; font-size: 1.2rem; }
+  .module-header-info p { font-size: 0.78rem; color: var(--sand); margin-top: 2px; }
+
+  .tab-nav {
+    display: flex;
+    background: white;
+    border-bottom: 2px solid var(--sand);
+    padding: 0 24px;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--mid);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    letter-spacing: 0.03em;
+    transition: all 0.2s;
+  }
+  .tab-btn.active { color: var(--terracotta); border-bottom-color: var(--terracotta); }
+
+  .tab-content { display: none; padding: 24px; }
+  .tab-content.active { display: block; }
+
+  /* ── CONTENT TAB ── */
+  .content-section {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 16px;
+    border: 1.5px solid var(--sand);
+  }
+  .content-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    margin-bottom: 12px;
+    color: var(--deep);
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--sand);
+  }
+  .content-section p { font-size: 0.9rem; line-height: 1.7; color: var(--mid); margin-bottom: 10px; }
+  .content-section p:last-child { margin-bottom: 0; }
+  .highlight-box {
+    background: #FFF8F0;
+    border-left: 3px solid var(--terracotta);
+    padding: 14px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 12px 0;
+    font-size: 0.88rem;
+    line-height: 1.6;
+    color: var(--deep);
+  }
+  .ratio-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 12px;
+  }
+  .ratio-table th {
+    background: var(--deep);
+    color: var(--cream);
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+  }
+  .ratio-table td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--sand);
+    color: var(--mid);
+  }
+  .ratio-table tr:last-child td { border-bottom: none; }
+  .ratio-table tr:nth-child(even) td { background: var(--cream); }
+
+  /* ── FLASHCARDS ── */
+  .flashcard-wrap {
+    perspective: 1000px;
+    margin: 8px 0 20px;
+  }
+  .flashcard {
+    width: 100%;
+    min-height: 200px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; min-height: 200px;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .card-front {
+    background: linear-gradient(135deg, var(--deep), #3D3020);
+    color: var(--cream);
+  }
+  .card-back {
+    background: linear-gradient(135deg, var(--terracotta), var(--terracotta-dark));
+    color: white;
+    transform: rotateY(180deg);
+  }
+  .card-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 14px;
+  }
+  .card-front .card-label { color: var(--sand); }
+  .card-back .card-label { color: rgba(255,255,255,0.7); }
+  .card-question {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    line-height: 1.4;
+  }
+  .card-answer { font-size: 0.92rem; line-height: 1.6; }
+  .card-tap-hint {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    margin-top: 14px;
+    letter-spacing: 0.05em;
+  }
+
+  .flashcard-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+  .nav-btn {
+    background: white;
+    border: 1.5px solid var(--sand);
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: var(--deep);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .nav-btn:hover { background: var(--cream); border-color: var(--terracotta); color: var(--terracotta); }
+  .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .card-counter {
+    font-size: 0.8rem;
+    color: var(--mid);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── QUIZ ── */
+  .quiz-progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .quiz-dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--sand);
+    transition: background 0.3s;
+  }
+  .quiz-dot.answered { background: var(--terracotta); }
+  .quiz-dot.correct { background: var(--success); }
+  .quiz-dot.wrong { background: var(--error); }
+
+  .question-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    border: 1.5px solid var(--sand);
+    margin-bottom: 16px;
+  }
+  .question-num {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--terracotta);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    margin-bottom: 18px;
+    color: var(--deep);
+  }
+  .answer-opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 13px 16px;
+    border-radius: 10px;
+    border: 1.5px solid var(--sand);
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    background: var(--warm-white);
+  }
+  .answer-opt:hover { border-color: var(--terracotta); background: #FFF5EE; }
+  .answer-opt.selected { border-color: var(--terracotta); background: #FFF0E8; }
+  .answer-opt.correct-ans { border-color: var(--success); background: #EAF5EC; }
+  .answer-opt.wrong-ans { border-color: var(--error); background: #FAEAEA; }
+  .answer-opt input[type=radio] { margin-top: 2px; accent-color: var(--terracotta); flex-shrink: 0; }
+
+  .quiz-feedback {
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+    display: none;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct { background: #EAF5EC; color: var(--success); border-left: 3px solid var(--success); }
+  .quiz-feedback.wrong { background: #FAEAEA; color: var(--error); border-left: 3px solid var(--error); }
+
+  .primary-btn {
+    background: var(--terracotta);
+    color: white;
+    border: none;
+    padding: 13px 28px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.02em;
+    width: 100%;
+  }
+  .primary-btn:hover { background: var(--terracotta-dark); transform: translateY(-1px); }
+  .primary-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+  .secondary-btn {
+    background: white;
+    color: var(--deep);
+    border: 1.5px solid var(--sand);
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    margin-top: 10px;
+  }
+  .secondary-btn:hover { border-color: var(--terracotta); color: var(--terracotta); }
+
+  /* ── QUIZ RESULTS ── */
+  .quiz-results {
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .results-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+  .results-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    color: var(--terracotta);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .results-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--mid);
+    margin-bottom: 20px;
+  }
+  .results-msg {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--mid);
+    max-width: 300px;
+    margin: 0 auto 28px;
+  }
+
+  /* ── ADMIN PANEL ── */
+  .admin-login {
+    max-width: 400px;
+    margin: 60px auto;
+    padding: 0 24px;
+  }
+  .admin-login h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 8px;
+  }
+  .admin-login p { color: var(--mid); font-size: 0.9rem; margin-bottom: 28px; }
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--mid);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--sand);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    background: white;
+    color: var(--deep);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--terracotta);
+  }
+  .form-group textarea { min-height: 80px; resize: vertical; }
+
+  .admin-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    min-height: calc(100vh - 60px);
+  }
+  .admin-sidebar {
+    background: var(--deep);
+    padding: 28px 0;
+  }
+  .admin-sidebar h3 {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--light);
+    padding: 0 20px;
+    margin-bottom: 10px;
+  }
+  .sidebar-item {
+    display: block;
+    padding: 12px 20px;
+    color: var(--sand);
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+    background: none;
+    border-right: none;
+    border-top: none;
+    border-bottom: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .sidebar-item:hover { background: rgba(255,255,255,0.06); color: white; }
+  .sidebar-item.active { background: rgba(196,98,58,0.15); color: var(--terracotta-light); border-left-color: var(--terracotta); }
+  .sidebar-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 14px 0; }
+
+  .admin-main { padding: 32px; background: var(--cream); overflow-y: auto; }
+  .admin-main h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 6px;
+  }
+  .admin-main .subtitle { color: var(--mid); font-size: 0.88rem; margin-bottom: 28px; }
+
+  .admin-panel-section { display: none; }
+  .admin-panel-section.active { display: block; }
+
+  .staff-table {
+    width: 100%;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1.5px solid var(--sand);
+    font-size: 0.85rem;
+  }
+  .staff-table th {
+    background: var(--deep);
+    color: var(--cream);
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    font-size: 0.8rem;
+  }
+  .staff-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--sand);
+    vertical-align: middle;
+  }
+  .staff-table tr:last-child td { border-bottom: none; }
+  .staff-table tr:hover td { background: var(--cream); }
+
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .tag-cr { background: #E8F0FF; color: #4060B0; }
+  .tag-fl { background: #E8F5EB; color: var(--success); }
+  .tag-mc { background: #FFF0E8; color: var(--terracotta); }
+  .tag-done { background: #E8F5EB; color: var(--success); }
+  .tag-progress { background: #FFF8E0; color: var(--gold); }
+  .tag-new { background: var(--sand); color: var(--mid); }
+
+  .action-link {
+    color: var(--terracotta);
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    transition: text-decoration-color 0.2s;
+    background: none;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .action-link:hover { text-decoration-color: var(--terracotta); }
+  .action-link.danger { color: var(--error); }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    border: 1.5px solid var(--sand);
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    color: var(--terracotta);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .stat-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--mid); }
+
+  .add-staff-form {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    border: 1.5px solid var(--sand);
+    max-width: 520px;
+    margin-bottom: 28px;
+  }
+  .add-staff-form h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 18px;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .link-display {
+    background: var(--cream);
+    border: 1.5px dashed var(--sand);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: var(--mid);
+    font-family: monospace;
+    word-break: break-all;
+    margin-top: 8px;
+  }
+  .copy-btn {
+    background: var(--sage);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 600;
+    transition: background 0.2s;
+    margin-top: 8px;
+  }
+  .copy-btn:hover { background: var(--sage-light); }
+
+  /* ── CERTIFICATE ── */
+  .cert-screen {
+    padding: 32px 24px;
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .cert-preview {
+    background: white;
+    border: 3px solid var(--gold);
+    border-radius: 20px;
+    padding: 40px 36px;
+    margin: 24px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .cert-preview::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--terracotta), var(--gold), var(--sage));
+  }
+  .cert-preview::after {
+    content: '✦';
+    position: absolute;
+    bottom: 14px;
+    right: 20px;
+    font-size: 5rem;
+    color: var(--gold);
+    opacity: 0.06;
+  }
+  .cert-bb-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    color: var(--mid);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .cert-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--deep);
+    margin-bottom: 6px;
+  }
+  .cert-subtitle { font-size: 0.85rem; color: var(--mid); margin-bottom: 24px; }
+  .cert-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: var(--terracotta);
+    margin-bottom: 8px;
+  }
+  .cert-module {
+    font-size: 0.9rem;
+    color: var(--mid);
+    margin-bottom: 6px;
+  }
+  .cert-module strong { color: var(--deep); }
+  .cert-date { font-size: 0.78rem; color: var(--light); margin-bottom: 24px; }
+  .cert-seal {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), #E6A830);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    font-size: 1.8rem;
+    color: white;
+    box-shadow: 0 4px 16px rgba(201,149,42,0.3);
+  }
+  .cert-signature-line {
+    border-top: 1px solid var(--sand);
+    padding-top: 12px;
+    font-size: 0.78rem;
+    color: var(--mid);
+    margin-top: 20px;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--deep);
+    color: var(--cream);
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: transform 0.3s ease;
+    z-index: 999;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── ADMIN CERT PANEL ── */
+  .cert-award-card {
+    background: white;
+    border-radius: 14px;
+    padding: 20px 24px;
+    border: 1.5px solid var(--sand);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .cert-award-card .staff-info h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 3px; }
+  .cert-award-card .staff-info p { font-size: 0.78rem; color: var(--mid); }
+
+  @media (max-width: 640px) {
+    .admin-layout { grid-template-columns: 1fr; }
+    .admin-sidebar { display: none; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="app-header">
+  <div class="logo">Bright <span>Beginnings</span></div>
+  <div class="header-tag" id="headerTag">Staff Training</div>
+</header>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN: STAFF HOME
+════════════════════════════════════════════ -->
+<div class="screen active" id="screenStaffHome">
+  <div class="staff-hero">
+    <div class="site-badge" id="staffSiteBadge">Forest Lakes</div>
+    <h1 id="staffGreeting">Welcome back,<br>Sarah</h1>
+    <p>Your training dashboard · 2024–2025</p>
+  </div>
+
+  <div class="progress-bar-wrap" style="background:white;">
+    <div class="progress-label">
+      <span>Annual Training Progress</span>
+      <span id="progressPct">0% complete</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <div class="modules-grid" id="modulesList"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN: MODULE VIEWER
+════════════════════════════════════════════ -->
+<div class="screen" id="screenModule">
+  <div class="module-header">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <div class="module-header-info">
+      <h2 id="moduleHeaderTitle">Module Title</h2>
+      <p id="moduleHeaderMeta">3 sections · 8 flashcards · 5-question quiz</p>
+    </div>
+  </div>
+  <div class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab('content')">📖 Content</button>
+    <button class="tab-btn" onclick="switchTab('flashcards')">🃏 Flashcards</button>
+    <button class="tab-btn" onclick="switchTab('quiz')">✏️ Quiz</button>
+  </div>
+  <div class="tab-content active" id="tabContent"></div>
+  <div class="tab-content" id="tabFlashcards"></div>
+  <div class="tab-content" id="tabQuiz"></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN: CERTIFICATE VIEW (Staff)
+════════════════════════════════════════════ -->
+<div class="screen" id="screenCert">
+  <div class="module-header">
+    <button class="back-btn" onclick="goBack()">←</button>
+    <div class="module-header-info">
+      <h2>Your Certificate</h2>
+      <p>Save or share as needed</p>
+    </div>
+  </div>
+  <div class="cert-screen">
+    <div class="cert-preview" id="certPreview">
+      <div class="cert-bb-logo">Bright Beginnings Preschool</div>
+      <div class="cert-seal">🌟</div>
+      <div class="cert-title">Certificate of Completion</div>
+      <div class="cert-subtitle">This certifies that</div>
+      <div class="cert-name" id="certName">Sarah Mayers</div>
+      <div class="cert-module">has successfully completed</div>
+      <div class="cert-module"><strong id="certModuleName">Virginia Licensing & Ratio Standards</strong></div>
+      <div class="cert-date" id="certDate">Issued March 5, 2025</div>
+      <div class="cert-signature-line">
+        Kathe Petchel, CEO · Bright Beginnings Preschool · Charlottesville, VA
+      </div>
+    </div>
+    <button class="primary-btn" onclick="printCert()">🖨️ Print / Save as PDF</button>
+    <button class="secondary-btn" onclick="emailCert()">📧 Email Certificate</button>
+    <p style="font-size:0.75rem;color:var(--mid);margin-top:16px;line-height:1.5;">
+      Print this page and use your browser's "Save as PDF" option,<br>or email it directly to your site director.
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN: ADMIN LOGIN
+════════════════════════════════════════════ -->
+<div class="screen" id="screenAdminLogin">
+  <div class="admin-login">
+    <h2>Admin Panel</h2>
+    <p>Bright Beginnings training administration</p>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="adminPassInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')adminLogin()">
+    </div>
+    <button class="primary-btn" onclick="adminLogin()">Sign In</button>
+    <p style="font-size:0.75rem;color:var(--mid);margin-top:14px;">Default password for demo: <strong>bb2025</strong></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SCREEN: ADMIN DASHBOARD
+════════════════════════════════════════════ -->
+<div class="screen" id="screenAdmin">
+  <div class="admin-layout">
+    <nav class="admin-sidebar">
+      <h3>Training Admin</h3>
+      <button class="sidebar-item active" onclick="adminNav('dashboard', this)">📊 Dashboard</button>
+      <button class="sidebar-item" onclick="adminNav('staff', this)">👩‍🏫 Staff & Links</button>
+      <button class="sidebar-item" onclick="adminNav('certificates', this)">🏅 Certificates</button>
+      <hr class="sidebar-divider">
+      <button class="sidebar-item" onclick="adminNav('modules', this)">📚 Modules</button>
+      <hr class="sidebar-divider">
+      <button class="sidebar-item" onclick="goToScreen('screenStaffHome');updateHeaderTag('Staff Training');" style="margin-top:auto;">← Exit Admin</button>
+    </nav>
+
+    <main class="admin-main">
+
+      <!-- DASHBOARD -->
+      <div class="admin-panel-section active" id="panelDashboard">
+        <h2>Dashboard</h2>
+        <div class="subtitle">Overview across all three sites</div>
+        <div class="stats-row" id="statsRow"></div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:16px;">All Staff Activity</h3>
+        <table class="staff-table" id="dashTable">
+          <thead>
+            <tr>
+              <th>Name</th><th>Site</th><th>Modules Done</th><th>Last Active</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="dashTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- STAFF & LINKS -->
+      <div class="admin-panel-section" id="panelStaff">
+        <h2>Staff & Unique Links</h2>
+        <div class="subtitle">Add staff and share their personal training link</div>
+        <div class="add-staff-form">
+          <h3>Add New Staff Member</h3>
+          <div class="form-row">
+            <div class="form-group"><label>First Name</label><input id="newFirstName" placeholder="Sarah"></div>
+            <div class="form-group"><label>Last Name</label><input id="newLastName" placeholder="Mayers"></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Site</label>
+              <select id="newSite">
+                <option value="Forest Lakes">Forest Lakes (FL)</option>
+                <option value="Mill Creek">Mill Creek (MC)</option>
+                <option value="Crozet">Crozet (CR)</option>
+              </select>
+            </div>
+            <div class="form-group"><label>Email</label><input id="newEmail" type="email" placeholder="sarah@brightbeginnings.com"></div>
+          </div>
+          <div class="form-group"><label>Role</label><input id="newRole" placeholder="Lead Teacher, Assistant, Director…"></div>
+          <button class="primary-btn" style="max-width:200px;" onclick="addStaff()">Add Staff Member</button>
+        </div>
+
+        <h3 style="font-family:'Playfair Display',serif;font-size:1.1rem;margin-bottom:16px;">Staff Directory</h3>
+        <table class="staff-table" id="staffTable">
+          <thead>
+            <tr><th>Name</th><th>Site</th><th>Role</th><th>Training Link</th><th></th></tr>
+          </thead>
+          <tbody id="staffTableBody"></tbody>
+        </table>
+      </div>
+
+      <!-- CERTIFICATES -->
+      <div class="admin-panel-section" id="panelCertificates">
+        <h2>Award Certificates</h2>
+        <div class="subtitle">Manually award a certificate for a completed module</div>
+        <div id="certAwardList"></div>
+      </div>
+
+      <!-- MODULES -->
+      <div class="admin-panel-section" id="panelModules">
+        <h2>Training Modules</h2>
+        <div class="subtitle">Hardcoded MVP modules · editing coming in Phase 2</div>
+        <table class="staff-table">
+          <thead><tr><th>#</th><th>Module Title</th><th>Flashcards</th><th>Quiz Qs</th><th>Status</th></tr></thead>
+          <tbody id="modulesTableBody"></tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════ JAVASCRIPT ═══════════ -->
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+const ADMIN_PASS = 'bb2025';
+const BASE_URL = window.location.origin + window.location.pathname;
+
+// Modules hardcoded for MVP
+const MODULES = [
+  {
+    id: 'mod1',
+    title: 'Virginia Licensing & Ratio Standards',
+    icon: '📋',
+    color: '#FFF0E8',
+    iconBg: '#FDDDC8',
+    duration: '20 min',
+    sections: [
+      {
+        heading: 'Why Ratios Matter',
+        body: `Virginia licensing ratios are the foundation of safe, high-quality childcare. They are set by the Virginia Department of Social Services (VDSS) and are based on the actual ages of children in the room — not the name of the classroom.\n\nAt Bright Beginnings, we take ratio compliance seriously. Being over ratio puts children at risk and puts our license at risk. Every staff member is responsible for knowing and maintaining correct ratios.`
+      },
+      {
+        heading: 'Age-Based Ratio Requirements',
+        body: `Virginia ratios are calculated by the youngest child in the room. The following table shows required staff-to-child ratios. During nap time (12:30–3:00 PM), ratios for children 16 months and older may be doubled — meaning one staff member can supervise twice as many sleeping children.`,
+        table: [
+          ['Age Group', 'Staff : Children', 'Nap Time (16mo+)'],
+          ['6 weeks – 15 months', '1 : 5', 'N/A'],
+          ['16 – 24 months', '1 : 6', '1 : 12'],
+          ['2 years', '1 : 9', '1 : 18'],
+          ['3 years (Preschool)', '1 : 11', '1 : 22'],
+          ['Pre-K (4–5 years)', '1 : 11', '1 : 22'],
+        ]
+      },
+      {
+        heading: 'Waiver System',
+        body: `When a classroom is temporarily over ratio due to circumstances like a late arrival or staff bathroom break, a waiver may be in effect. Waivers are tracked by site directors and must be documented.\n\nIf you are ever unsure whether your room is in compliance, contact your site director immediately. Never ignore a ratio concern.`,
+        highlight: 'Important: Ratios are based on the actual age of each child — not the classroom name. A child who turns 3 mid-year changes the ratio calculation for that room.'
+      }
+    ],
+    flashcards: [
+      { q: 'What is the ratio for infants 6 weeks to 15 months?', a: '1 staff to every 5 children (1:5)' },
+      { q: 'What is the ratio for 2-year-olds?', a: '1 staff to every 9 children (1:9)' },
+      { q: 'What is the ratio for Preschool (3-year-olds)?', a: '1 staff to every 11 children (1:11)' },
+      { q: 'What happens to ratios during nap time?', a: 'For children 16 months and older, ratios double. One staff can supervise twice as many sleeping children.' },
+      { q: 'Are ratios based on room name or child age?', a: 'Child age — always. A room called "Butterflies" might still have infant ratios if young children are present.' },
+      { q: 'What should you do if your room is over ratio?', a: 'Contact your site director immediately. Never ignore a ratio concern.' },
+      { q: 'What is the nap time ratio for 2-year-olds?', a: '1:18 — double the regular 1:9 ratio.' },
+      { q: 'Which agency sets Virginia childcare ratio requirements?', a: 'Virginia Department of Social Services (VDSS)' },
+    ],
+    quiz: [
+      {
+        q: 'A classroom has a 14-month-old and three 2-year-olds. What ratio applies?',
+        opts: ['1:9 because most children are 2', '1:5 because the youngest child is under 15 months', '1:6 because the room is mixed age', '1:11 because it is a preschool room'],
+        correct: 1,
+        explanation: 'Ratios are always set by the youngest child in the room. At 14 months, the infant ratio of 1:5 applies to the entire room.'
+      },
+      {
+        q: 'During nap time at 1:30 PM, how many sleeping 3-year-olds can one staff member supervise?',
+        opts: ['11', '22', '9', '18'],
+        correct: 1,
+        explanation: 'Nap time doubles the ratio for children 16 months and older. The preschool ratio is 1:11, so nap time allows 1:22.'
+      },
+      {
+        q: 'You notice your room has 10 two-year-olds and only 1 staff member. What do you do?',
+        opts: ['Wait until break time to report it', 'Contact your site director immediately', 'Ask a parent to stay', 'It is fine — ratio is 1:9 so one extra child is okay'],
+        correct: 1,
+        explanation: 'The 2-year-old ratio is 1:9. Ten children requires at least 2 staff. This is an active ratio violation — contact your director immediately.'
+      },
+      {
+        q: 'Who sets Virginia childcare licensing ratio requirements?',
+        opts: ['Virginia Department of Education (VDOE)', 'Bright Beginnings management', 'Virginia Department of Social Services (VDSS)', 'The National Association for the Education of Young Children'],
+        correct: 2,
+        explanation: 'The Virginia Department of Social Services (VDSS) sets and enforces childcare licensing standards including ratios.'
+      },
+      {
+        q: 'A child in your Butterflies room just turned 16 months. Does anything change?',
+        opts: ['No, room name determines ratio', 'Yes — the ratio for that child's age group now applies to the whole room', 'Only if they are the youngest child', 'Only during nap time'],
+        correct: 2,
+        explanation: 'Ratios are age-based. If this child is now the youngest, the 16–24 month ratio of 1:6 applies. Always reassess when a child has a birthday.'
+      },
+    ]
+  },
+  {
+    id: 'mod2',
+    title: 'Child Health & Safety Basics',
+    icon: '🏥',
+    color: '#F0F8FF',
+    iconBg: '#C8E4F8',
+    duration: '15 min',
+    sections: [
+      {
+        heading: 'Allergy Awareness',
+        body: `All staff must be familiar with the allergy profiles of every child in their care. Allergy information is posted in each classroom and is available via Tadpoles.\n\nBefore any food is distributed — including snacks brought by families — you must check it against known allergies for every child in the room.`,
+        highlight: 'Never assume a food is safe. When in doubt, do not serve it and contact a director or the child's family.'
+      },
+      {
+        heading: 'Medication Administration',
+        body: `Bright Beginnings staff may only administer medication when a completed medication authorization form is on file, signed by the parent or guardian. This applies to all medications including over-the-counter items like sunscreen, diaper cream, and pain relievers.\n\nMedication must be in its original container and labeled with the child's name. All administration must be logged with the time, dosage, and staff member's name.`
+      },
+      {
+        heading: 'Incident Reporting',
+        body: `Any injury, illness, or unusual incident involving a child must be documented on an Incident Report form within 24 hours. The site director must be notified immediately for any head injury, bite that breaks skin, or situation requiring medical attention.\n\nParents must be notified the same day. A copy of the incident report must be placed in the child's file.`
+      }
+    ],
+    flashcards: [
+      { q: 'Where can you find each child\'s allergy information?', a: 'Posted in the classroom and available via Tadpoles' },
+      { q: 'When can staff administer medication to a child?', a: 'Only when a completed, parent-signed medication authorization form is on file' },
+      { q: 'What must be on a medication container before you can administer it?', a: "The child's name, and it must be in its original container" },
+      { q: 'When must an Incident Report be filed?', a: 'Within 24 hours of any injury, illness, or unusual incident' },
+      { q: 'Who must you notify immediately for a head injury?', a: 'Your site director — and parents must be notified the same day' },
+      { q: 'Can you serve a snack a family brought in without checking allergies?', a: 'No. Always check against all known allergies before serving any food' },
+    ],
+    quiz: [
+      {
+        q: 'A parent drops off homemade muffins for the class to celebrate their child\'s birthday. What do you do first?',
+        opts: ['Serve them immediately — the parent made them', 'Check the muffins against every child\'s allergy profile before serving', 'Ask the child if they contain nuts', 'Only serve to children without nut allergies'],
+        correct: 1,
+        explanation: 'You must always check any food — including parent-brought items — against the full allergy profile for every child in the room before serving.'
+      },
+      {
+        q: 'A parent asks you to give their child Tylenol at lunch. You do not have a medication form. What do you do?',
+        opts: ['Administer it since the parent asked verbally', 'Decline and ask the parent to complete a medication authorization form', 'Ask the site director to administer it instead', 'Give a half dose since the form is not available'],
+        correct: 1,
+        explanation: 'Medication cannot be administered without a completed, signed medication authorization form on file — regardless of verbal requests.'
+      },
+      {
+        q: 'A child falls and bumps their head. What is required?',
+        opts: ['Document it if parents ask', 'Notify the site director immediately and notify parents the same day', 'File a report only if there is a visible injury', 'Wait to see if symptoms develop'],
+        correct: 1,
+        explanation: 'Head injuries require immediate director notification, same-day parent notification, and an incident report within 24 hours.'
+      },
+      {
+        q: 'Where is medication log information recorded?',
+        opts: ['In the director\'s email', 'In a log with time, dosage, and administering staff member\'s name', 'On the child\'s daily sheet only', 'Verbally communicated to parents at pickup'],
+        correct: 1,
+        explanation: 'All medication administration must be logged with time, dosage, and the staff member\'s name. This is a licensing requirement.'
+      },
+      {
+        q: 'How soon must an incident report be filed after an incident?',
+        opts: ['By end of the week', 'Within 72 hours', 'Within 24 hours', 'By the end of the following business day'],
+        correct: 2,
+        explanation: 'Incident reports must be filed within 24 hours of the incident.'
+      },
+    ]
+  },
+  {
+    id: 'mod3',
+    title: 'Family Communication Standards',
+    icon: '💬',
+    color: '#F0FFF4',
+    iconBg: '#C4E8CC',
+    duration: '12 min',
+    sections: [
+      {
+        heading: 'The Bright Beginnings Voice',
+        body: `At Bright Beginnings, families are treated as extended family — not customers. Every communication, whether a daily note on Tadpoles, a conversation at drop-off, or an email about a concern, should reflect warmth, clarity, and honesty.\n\nOur approach: explain the why behind decisions, give specific timelines where possible, and always offer a clear contact for follow-up.`,
+        highlight: '"Disney World" standard: families should leave every interaction feeling informed, respected, and confident that their child is safe and loved.'
+      },
+      {
+        heading: 'Tadpoles Communication Platform',
+        body: `Tadpoles is our primary tool for daily family communication. Every child should receive at least one update per day — a photo, a note about their mood or activities, or a meal/nap update.\n\nTadpoles is also used for staff allergy alerts and internal communications. Treat Tadpoles messages to families as professional communications — proofread before sending.`
+      },
+      {
+        heading: 'Handling Difficult Conversations',
+        body: `If a parent is upset or raises a concern:\n\n1. Listen fully before responding.\n2. Acknowledge their concern without being defensive.\n3. Do not make promises you cannot keep.\n4. Involve your site director for anything beyond a routine question.\n\nNever discuss another child's behavior, health, or family situation with a parent — confidentiality is both an ethical and legal obligation.`,
+        highlight: 'If you are unsure how to respond, it is always acceptable to say: "I want to make sure I give you the right information — let me check with my director and follow up with you today."'
+      }
+    ],
+    flashcards: [
+      { q: 'What is the minimum number of Tadpoles updates per child per day?', a: 'At least one update — photo, mood/activity note, or meal/nap update' },
+      { q: 'What is the "Disney World" standard at Bright Beginnings?', a: 'Families leave every interaction feeling informed, respected, and confident their child is safe and loved' },
+      { q: 'What should you do if a parent raises a concern you are unsure about?', a: 'Acknowledge it, avoid making promises, involve your site director, and follow up the same day' },
+      { q: 'Can you discuss another child\'s behavior with a parent?', a: 'No. Confidentiality is both an ethical and legal obligation' },
+      { q: 'What are three elements of good family communication?', a: 'Warmth, clarity, and honesty — with the "why" explained and a contact for follow-up' },
+      { q: 'What platform does Bright Beginnings use for daily family communication?', a: 'Tadpoles' },
+    ],
+    quiz: [
+      {
+        q: 'A parent stops you at pickup and says they are unhappy with how their child\'s potty training is being handled. What is your first step?',
+        opts: ['Explain your approach defensively', 'Listen fully before responding, then involve your director if needed', 'Tell them to email the director', 'Promise to change your approach immediately'],
+        correct: 1,
+        explanation: 'Always listen fully first. Then acknowledge without defensiveness, avoid promises you cannot keep, and involve your director for anything beyond routine questions.'
+      },
+      {
+        q: 'A parent asks why another child bit their child last week. How do you respond?',
+        opts: ['Explain what happened since the parent deserves to know', 'Confirm the incident happened but cannot share details about another child', 'Say nothing happened', 'Direct them to the other child\'s parent'],
+        correct: 1,
+        explanation: 'You can acknowledge an incident occurred but cannot share details about another child\'s behavior or identity. Confidentiality is a legal obligation.'
+      },
+      {
+        q: 'What should every Tadpoles update include at minimum?',
+        opts: ['A photo and a video', 'At least one meaningful update per child per day', 'A full daily report with meals, naps, and activities', 'A message to every parent regardless of child activity'],
+        correct: 1,
+        explanation: 'Each child should receive at least one update per day — a photo, note, or meal/nap update. Quality and consistency matter more than format.'
+      },
+      {
+        q: 'You send a Tadpoles message to a family and realize after sending it has a typo. What does this reflect?',
+        opts: ['It is fine — parents understand staff are busy', 'An opportunity to proofread; Tadpoles messages are professional communications', 'A reason to avoid using Tadpoles for important updates', 'A minor issue only if the typo changes the meaning'],
+        correct: 1,
+        explanation: 'Tadpoles messages to families are professional communications and should be proofread before sending. They reflect the organization\'s voice.'
+      },
+      {
+        q: 'Which of the following best reflects the Bright Beginnings family communication philosophy?',
+        opts: ['Respond to concerns only when asked directly', 'Share minimal information to avoid overwhelming families', 'Explain the why, give timelines, and provide a clear contact for follow-up', 'Keep communications positive and avoid sharing problems'],
+        correct: 2,
+        explanation: 'BB\'s core communication values: explain the why, give specific timelines, and always offer a contact for follow-up. Transparency is a core organizational value.'
+      },
+    ]
+  }
+];
+
+// ── APP STATE ──────────────────────────────────────────────────────────
+let state = {
+  currentStaff: null,
+  currentModule: null,
+  currentTab: 'content',
+  currentCard: 0,
+  cardFlipped: false,
+  quizAnswers: {},
+  quizSubmitted: false,
+  staff: [
+    { id: 'sarah01', name: 'Sarah Mayers', site: 'Forest Lakes', role: 'Assistant Director', email: 'sarah@brightbeginnings.com', completions: ['mod1'], certs: ['mod1'], lastActive: 'Today' },
+    { id: 'jess02', name: 'Jess Rybak', site: 'Forest Lakes', role: 'Site Director', email: 'jess@brightbeginnings.com', completions: [], certs: [], lastActive: 'Yesterday' },
+    { id: 'laura03', name: 'Laura Baker', site: 'Mill Creek', role: 'Site Director', email: 'laura@brightbeginnings.com', completions: ['mod1', 'mod2'], certs: [], lastActive: '2 days ago' },
+    { id: 'nancy04', name: 'Nancy', site: 'Crozet', role: 'Training Coordinator', email: 'nancy@brightbeginnings.com', completions: ['mod1', 'mod2', 'mod3'], certs: ['mod1', 'mod2', 'mod3'], lastActive: 'Today' },
+  ],
+  adminAuthed: false,
+};
+
+// ── ROUTING ──────────────────────────────────────────────────────────
+function init() {
+  const params = new URLSearchParams(window.location.search);
+  const staffId = params.get('staff');
+  const admin = params.get('admin');
+
+  if (admin === '1') {
+    goToScreen('screenAdminLogin');
+    updateHeaderTag('Admin');
+    return;
+  }
+
+  if (staffId) {
+    const found = state.staff.find(s => s.id === staffId);
+    if (found) {
+      state.currentStaff = found;
+      renderStaffHome();
+      goToScreen('screenStaffHome');
+      return;
+    }
+  }
+
+  // Default: show demo staff (Sarah)
+  state.currentStaff = state.staff[0];
+  renderStaffHome();
+  goToScreen('screenStaffHome');
+}
+
+function goToScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function updateHeaderTag(text) {
+  document.getElementById('headerTag').textContent = text;
+}
+
+function goBack() {
+  goToScreen('screenStaffHome');
+  updateHeaderTag('Staff Training');
+  renderStaffHome();
+}
+
+// ── STAFF HOME ────────────────────────────────────────────────────────
+function renderStaffHome() {
+  const s = state.currentStaff;
+  const firstName = s.name.split(' ')[0];
+  document.getElementById('staffGreeting').innerHTML = `Welcome,<br>${firstName}`;
+  document.getElementById('staffSiteBadge').textContent = s.site;
+
+  const done = s.completions.length;
+  const total = MODULES.length;
+  const pct = Math.round((done / total) * 100);
+  document.getElementById('progressPct').textContent = `${pct}% complete`;
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  const list = document.getElementById('modulesList');
+
+  // Show cert banner if any certs earned
+  let certHtml = '';
+  if (s.certs && s.certs.length > 0) {
+    const certMod = MODULES.find(m => m.id === s.certs[s.certs.length - 1]);
+    certHtml = `<div class="cert-banner" onclick="showCert('${s.certs[s.certs.length-1]}')">
+      <div class="cert-icon">🏅</div>
+      <div>
+        <h3>Certificate Available</h3>
+        <p>Your certificate for "${certMod ? certMod.title : 'a module'}" is ready to view</p>
+      </div>
+      <div style="margin-left:auto;font-size:1.3rem;">→</div>
+    </div>`;
+  }
+
+  let cardsHtml = '';
+  MODULES.forEach((mod, i) => {
+    const completed = s.completions.includes(mod.id);
+    const statusLabel = completed ? '<span class="module-status status-done">✓ Complete</span>' : '<span class="module-status status-new">New</span>';
+    const cardClass = completed ? 'module-card completed' : 'module-card';
+    cardsHtml += `
+      <div class="${cardClass}" onclick="openModule('${mod.id}')">
+        <div class="module-top">
+          <div class="module-icon" style="background:${mod.iconBg}">${mod.icon}</div>
+          ${statusLabel}
+        </div>
+        <div class="module-title">${mod.title}</div>
+        <div class="module-meta">
+          <span>⏱ ${mod.duration}</span>
+          <span>🃏 ${mod.flashcards.length} cards</span>
+          <span>✏️ ${mod.quiz.length} questions</span>
+        </div>
+      </div>`;
+  });
+
+  list.innerHTML = certHtml + cardsHtml;
+}
+
+// ── MODULE VIEWER ─────────────────────────────────────────────────────
+function openModule(modId) {
+  const mod = MODULES.find(m => m.id === modId);
+  state.currentModule = mod;
+  state.currentCard = 0;
+  state.cardFlipped = false;
+  state.quizAnswers = {};
+  state.quizSubmitted = false;
+
+  document.getElementById('moduleHeaderTitle').textContent = mod.title;
+  document.getElementById('moduleHeaderMeta').textContent =
+    `${mod.sections.length} sections · ${mod.flashcards.length} flashcards · ${mod.quiz.length}-question quiz`;
+
+  switchTab('content');
+  renderContent();
+  renderFlashcards();
+  renderQuiz();
+
+  goToScreen('screenModule');
+  updateHeaderTag(mod.title);
+}
+
+function switchTab(tab) {
+  state.currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  const tabMap = { content: 0, flashcards: 1, quiz: 2 };
+  document.querySelectorAll('.tab-btn')[tabMap[tab]].classList.add('active');
+  document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+}
+
+// ── CONTENT ──────────────────────────────────────────────────────────
+function renderContent() {
+  const mod = state.currentModule;
+  let html = '';
+  mod.sections.forEach(sec => {
+    let inner = `<h3>${sec.heading}</h3>`;
+    sec.body.split('\n\n').forEach(para => {
+      if (para.trim()) inner += `<p>${para.replace(/\n/g, '<br>')}</p>`;
+    });
+    if (sec.highlight) inner += `<div class="highlight-box">${sec.highlight}</div>`;
+    if (sec.table) {
+      inner += '<table class="ratio-table"><thead><tr>';
+      sec.table[0].forEach(h => inner += `<th>${h}</th>`);
+      inner += '</tr></thead><tbody>';
+      sec.table.slice(1).forEach(row => {
+        inner += '<tr>';
+        row.forEach(cell => inner += `<td>${cell}</td>`);
+        inner += '</tr>';
+      });
+      inner += '</tbody></table>';
+    }
+    html += `<div class="content-section">${inner}</div>`;
+  });
+  html += `<button class="primary-btn" onclick="switchTab('flashcards')" style="margin-top:8px;">Continue to Flashcards →</button>`;
+  document.getElementById('tabContent').innerHTML = html;
+}
+
+// ── FLASHCARDS ────────────────────────────────────────────────────────
+function renderFlashcards() {
+  const mod = state.currentModule;
+  const cards = mod.flashcards;
+
+  function html() {
+    const card = cards[state.currentCard];
+    return `
+      <p style="font-size:0.78rem;color:var(--mid);margin-bottom:16px;">Tap a card to reveal the answer.</p>
+      <div class="flashcard-wrap">
+        <div class="flashcard ${state.cardFlipped ? 'flipped' : ''}" onclick="flipCard()" id="flashcard">
+          <div class="card-face card-front">
+            <div class="card-label">Question ${state.currentCard + 1} of ${cards.length}</div>
+            <div class="card-question">${card.q}</div>
+            <div class="card-tap-hint">Tap to reveal answer</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="card-label">Answer</div>
+            <div class="card-answer">${card.a}</div>
+            <div class="card-tap-hint">Tap to flip back</div>
+          </div>
+        </div>
+      </div>
+      <div class="flashcard-nav">
+        <button class="nav-btn" onclick="prevCard()" ${state.currentCard === 0 ? 'disabled' : ''}>← Prev</button>
+        <span class="card-counter">${state.currentCard + 1} / ${cards.length}</span>
+        <button class="nav-btn" onclick="nextCard()" ${state.currentCard === cards.length - 1 ? 'disabled' : ''}>Next →</button>
+      </div>
+      ${state.currentCard === cards.length - 1 ? `<button class="primary-btn" onclick="switchTab('quiz')">Ready for the Quiz →</button>` : ''}
+    `;
+  }
+
+  document.getElementById('tabFlashcards').innerHTML = html();
+  window._flashcardRender = html;
+}
+
+function flipCard() {
+  state.cardFlipped = !state.cardFlipped;
+  document.getElementById('tabFlashcards').innerHTML = window._flashcardRender();
+}
+function prevCard() { state.currentCard--; state.cardFlipped = false; document.getElementById('tabFlashcards').innerHTML = window._flashcardRender(); }
+function nextCard() { state.currentCard++; state.cardFlipped = false; document.getElementById('tabFlashcards').innerHTML = window._flashcardRender(); }
+
+// ── QUIZ ──────────────────────────────────────────────────────────────
+function renderQuiz() {
+  const mod = state.currentModule;
+  if (state.quizSubmitted) { renderQuizResults(); return; }
+
+  let dotsHtml = mod.quiz.map((_, i) =>
+    `<div class="quiz-dot ${state.quizAnswers[i] !== undefined ? 'answered' : ''}"></div>`
+  ).join('');
+
+  let questionsHtml = '';
+  mod.quiz.forEach((q, qi) => {
+    let optsHtml = '';
+    q.opts.forEach((opt, oi) => {
+      const sel = state.quizAnswers[qi] === oi ? 'selected' : '';
+      optsHtml += `
+        <div class="answer-opt ${sel}" onclick="selectAnswer(${qi}, ${oi})">
+          <input type="radio" ${sel ? 'checked' : ''} readonly> ${opt}
+        </div>`;
+    });
+    questionsHtml += `
+      <div class="question-card">
+        <div class="question-num">Question ${qi + 1}</div>
+        <div class="question-text">${q.q}</div>
+        ${optsHtml}
+      </div>`;
+  });
+
+  const allAnswered = Object.keys(state.quizAnswers).length === mod.quiz.length;
+
+  document.getElementById('tabQuiz').innerHTML = `
+    <div class="quiz-progress">${dotsHtml}</div>
+    ${questionsHtml}
+    <button class="primary-btn" onclick="submitQuiz()" ${allAnswered ? '' : 'disabled'}>
+      ${allAnswered ? 'Submit Quiz' : `Answer all ${mod.quiz.length} questions to submit`}
+    </button>
+  `;
+}
+
+function selectAnswer(qi, oi) {
+  if (state.quizSubmitted) return;
+  state.quizAnswers[qi] = oi;
+  renderQuiz();
+}
+
+function submitQuiz() {
+  state.quizSubmitted = true;
+  const mod = state.currentModule;
+  let correct = 0;
+  mod.quiz.forEach((q, i) => { if (state.quizAnswers[i] === q.correct) correct++; });
+  const pass = correct >= Math.ceil(mod.quiz.length * 0.8);
+  if (pass && !state.currentStaff.completions.includes(mod.id)) {
+    state.currentStaff.completions.push(mod.id);
+  }
+  renderQuizResults();
+}
+
+function renderQuizResults() {
+  const mod = state.currentModule;
+  let correct = 0;
+  mod.quiz.forEach((q, i) => { if (state.quizAnswers[i] === q.correct) correct++; });
+  const pct = Math.round((correct / mod.quiz.length) * 100);
+  const pass = pct >= 80;
+
+  // Show reviewed questions
+  let reviewHtml = '';
+  mod.quiz.forEach((q, qi) => {
+    const userAns = state.quizAnswers[qi];
+    const isCorrect = userAns === q.correct;
+    let optsHtml = q.opts.map((opt, oi) => {
+      let cls = 'answer-opt';
+      if (oi === q.correct) cls += ' correct-ans';
+      else if (oi === userAns && !isCorrect) cls += ' wrong-ans';
+      return `<div class="${cls}">${opt} ${oi === q.correct ? '✓' : (oi === userAns ? '✗' : '')}</div>`;
+    }).join('');
+    reviewHtml += `
+      <div class="question-card" style="margin-bottom:14px;">
+        <div class="question-num">Q${qi + 1} · ${isCorrect ? '✓ Correct' : '✗ Incorrect'}</div>
+        <div class="question-text" style="font-size:0.95rem;">${q.q}</div>
+        ${optsHtml}
+        <div class="quiz-feedback show ${isCorrect ? 'correct' : 'wrong'}">${q.explanation}</div>
+      </div>`;
+  });
+
+  document.getElementById('tabQuiz').innerHTML = `
+    <div class="quiz-results">
+      <span class="results-icon">${pass ? '🎉' : '📚'}</span>
+      <div class="results-score">${pct}%</div>
+      <div class="results-label">${correct} of ${mod.quiz.length} correct</div>
+      <p class="results-msg">${pass
+        ? 'Great work! This module is now marked complete on your training dashboard.'
+        : 'You need 80% to pass. Review the content and flashcards, then try again.'
+      }</p>
+      ${pass
+        ? `<button class="primary-btn" onclick="goBack()">Back to Dashboard</button>`
+        : `<button class="primary-btn" onclick="retakeQuiz()">Retake Quiz</button>
+           <button class="secondary-btn" onclick="switchTab('content')">Review Content First</button>`
+      }
+    </div>
+    <div style="padding:0 24px 32px;">
+      <h3 style="font-family:'Playfair Display',serif;font-size:1rem;margin-bottom:16px;color:var(--mid);">Review Your Answers</h3>
+      ${reviewHtml}
+    </div>`;
+}
+
+function retakeQuiz() {
+  state.quizAnswers = {};
+  state.quizSubmitted = false;
+  renderQuiz();
+}
+
+// ── CERTIFICATES ──────────────────────────────────────────────────────
+function showCert(modId) {
+  const mod = MODULES.find(m => m.id === modId);
+  const s = state.currentStaff;
+  document.getElementById('certName').textContent = s.name;
+  document.getElementById('certModuleName').textContent = mod.title;
+  document.getElementById('certDate').textContent = 'Issued ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  goToScreen('screenCert');
+  updateHeaderTag('Certificate');
+}
+
+function printCert() {
+  window.print();
+}
+
+function emailCert() {
+  const s = state.currentStaff;
+  const mod = MODULES.find(m => m.id === (s.certs[s.certs.length - 1] || 'mod1'));
+  const subject = encodeURIComponent(`Training Certificate – ${s.name} – ${mod ? mod.title : 'Module'}`);
+  const body = encodeURIComponent(`Please find attached the training certificate for ${s.name}.\n\nModule: ${mod ? mod.title : ''}\nCompleted: ${new Date().toLocaleDateString()}\n\nBright Beginnings Preschool`);
+  window.location.href = `mailto:?subject=${subject}&body=${body}`;
+}
+
+// ── ADMIN ──────────────────────────────────────────────────────────────
+function adminLogin() {
+  const val = document.getElementById('adminPassInput').value;
+  if (val === ADMIN_PASS) {
+    state.adminAuthed = true;
+    goToScreen('screenAdmin');
+    updateHeaderTag('Admin Panel');
+    renderAdminDashboard();
+    renderStaffTable();
+    renderCertPanel();
+    renderModulesTable();
+  } else {
+    showToast('Incorrect password');
+  }
+}
+
+function adminNav(panel, btn) {
+  document.querySelectorAll('.sidebar-item').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.admin-panel-section').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel' + panel.charAt(0).toUpperCase() + panel.slice(1)).classList.add('active');
+}
+
+function renderAdminDashboard() {
+  const total = state.staff.length;
+  const completed = state.staff.filter(s => s.completions.length > 0).length;
+  const certs = state.staff.reduce((a, s) => a + (s.certs ? s.certs.length : 0), 0);
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">Staff Members</div></div>
+    <div class="stat-card"><div class="stat-num">${completed}</div><div class="stat-label">Actively Training</div></div>
+    <div class="stat-card"><div class="stat-num">${certs}</div><div class="stat-label">Certificates Issued</div></div>
+  `;
+
+  const siteTag = { 'Forest Lakes': 'tag-fl', 'Mill Creek': 'tag-mc', 'Crozet': 'tag-cr' };
+  let rows = '';
+  state.staff.forEach(s => {
+    const done = s.completions.length;
+    const total = MODULES.length;
+    const statusCls = done === total ? 'tag-done' : done > 0 ? 'tag-progress' : 'tag-new';
+    const statusTxt = done === total ? 'All Complete' : done > 0 ? `${done}/${total} Modules` : 'Not Started';
+    rows += `<tr>
+      <td><strong>${s.name}</strong></td>
+      <td><span class="tag ${siteTag[s.site] || ''}">${s.site}</span></td>
+      <td>${done} / ${total}</td>
+      <td>${s.lastActive || '—'}</td>
+      <td><span class="tag ${statusCls}">${statusTxt}</span></td>
+    </tr>`;
+  });
+  document.getElementById('dashTableBody').innerHTML = rows;
+}
+
+function renderStaffTable() {
+  const siteTag = { 'Forest Lakes': 'tag-fl', 'Mill Creek': 'tag-mc', 'Crozet': 'tag-cr' };
+  let rows = '';
+  state.staff.forEach(s => {
+    const link = `${BASE_URL}?staff=${s.id}`;
+    rows += `<tr>
+      <td><strong>${s.name}</strong><br><span style="font-size:0.75rem;color:var(--mid)">${s.email || ''}</span></td>
+      <td><span class="tag ${siteTag[s.site] || ''}">${s.site}</span></td>
+      <td>${s.role}</td>
+      <td>
+        <div class="link-display">${link}</div>
+        <button class="copy-btn" onclick="copyLink('${link}')">Copy Link</button>
+      </td>
+      <td><button class="action-link danger" onclick="removeStaff('${s.id}')">Remove</button></td>
+    </tr>`;
+  });
+  document.getElementById('staffTableBody').innerHTML = rows;
+}
+
+function addStaff() {
+  const first = document.getElementById('newFirstName').value.trim();
+  const last = document.getElementById('newLastName').value.trim();
+  const site = document.getElementById('newSite').value;
+  const email = document.getElementById('newEmail').value.trim();
+  const role = document.getElementById('newRole').value.trim();
+  if (!first || !last) { showToast('Please enter a first and last name'); return; }
+  const id = (first + last).toLowerCase().replace(/\s/g,'') + Math.random().toString(36).slice(2,6);
+  state.staff.push({ id, name: `${first} ${last}`, site, email, role, completions: [], certs: [], lastActive: '—' });
+  ['newFirstName','newLastName','newEmail','newRole'].forEach(f => document.getElementById(f).value = '');
+  renderStaffTable();
+  renderAdminDashboard();
+  renderCertPanel();
+  showToast(`${first} ${last} added! Share their training link.`);
+}
+
+function removeStaff(id) {
+  state.staff = state.staff.filter(s => s.id !== id);
+  renderStaffTable();
+  renderAdminDashboard();
+  renderCertPanel();
+  showToast('Staff member removed');
+}
+
+function copyLink(link) {
+  navigator.clipboard.writeText(link).then(() => showToast('Link copied to clipboard!'));
+}
+
+function renderCertPanel() {
+  let html = '';
+  state.staff.forEach(s => {
+    MODULES.forEach(mod => {
+      if (s.completions.includes(mod.id)) {
+        const hasCert = s.certs && s.certs.includes(mod.id);
+        html += `<div class="cert-award-card">
+          <div class="staff-info">
+            <h4>${s.name}</h4>
+            <p>${s.site} · ${mod.title}</p>
+          </div>
+          ${hasCert
+            ? `<span class="tag tag-done">✓ Certificate Issued</span>`
+            : `<button class="primary-btn" style="width:auto;padding:10px 20px;" onclick="awardCert('${s.id}','${mod.id}')">Award Certificate</button>`
+          }
+        </div>`;
+      }
+    });
+  });
+  if (!html) html = `<p style="color:var(--mid);font-size:0.9rem;">No completed modules yet. Staff must complete a module quiz before a certificate can be awarded.</p>`;
+  document.getElementById('certAwardList').innerHTML = html;
+}
+
+function awardCert(staffId, modId) {
+  const s = state.staff.find(x => x.id === staffId);
+  const mod = MODULES.find(m => m.id === modId);
+  if (!s.certs) s.certs = [];
+  if (!s.certs.includes(modId)) s.certs.push(modId);
+
+  // If this is the current user, update their state too
+  if (state.currentStaff && state.currentStaff.id === staffId) {
+    state.currentStaff.certs = s.certs;
+  }
+
+  renderCertPanel();
+  renderAdminDashboard();
+  showToast(`Certificate awarded to ${s.name}!`);
+
+  // Email trigger (mailto)
+  const subject = encodeURIComponent(`Training Certificate – ${s.name} – ${mod.title}`);
+  const body = encodeURIComponent(
+    `Dear Director,\n\n${s.name} (${s.site}) has been awarded a certificate of completion for:\n\n"${mod.title}"\n\nDate: ${new Date().toLocaleDateString()}\n\nThis record should be added to their annual training log.\n\nBright Beginnings Training System`
+  );
+  window.open(`mailto:${s.email}?subject=${subject}&body=${body}`);
+}
+
+function renderModulesTable() {
+  let rows = '';
+  MODULES.forEach((mod, i) => {
+    rows += `<tr>
+      <td>${i+1}</td>
+      <td><strong>${mod.title}</strong></td>
+      <td>${mod.flashcards.length}</td>
+      <td>${mod.quiz.length}</td>
+      <td><span class="tag tag-done">Active</span></td>
+    </tr>`;
+  });
+  document.getElementById('modulesTableBody').innerHTML = rows;
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>
