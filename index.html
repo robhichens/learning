@@ -1352,27 +1352,42 @@ function renderStaffHome() {
     </div>`;
   }
 
-  let cardsHtml = '';
-  MODULES.forEach((mod, i) => {
-    const completed = s.completions.includes(mod.id);
-    const statusLabel = completed ? '<span class="module-status status-done">✓ Complete</span>' : '<span class="module-status status-new">New</span>';
-    const cardClass = completed ? 'module-card completed' : 'module-card';
-    cardsHtml += `
-      <div class="${cardClass}" onclick="openModule('${mod.id}')">
-        <div class="module-top">
-          <div class="module-icon" style="background:${mod.iconBg}">${mod.icon}</div>
-          ${statusLabel}
-        </div>
-        <div class="module-title">${mod.title}</div>
-        <div class="module-meta">
-          <span>⏱ ${mod.duration}</span>
-          <span>🃏 ${mod.flashcards.length} cards</span>
-          <span>✏️ ${mod.quiz.length} questions</span>
-        </div>
-      </div>`;
-  });
+  list.innerHTML = certHtml;
 
-  list.innerHTML = certHtml + cardsHtml;
+  MODULES.forEach(function(mod) {
+    var completed = s.completions.indexOf(mod.id) > -1;
+    var card = document.createElement('div');
+    card.className = completed ? 'module-card completed' : 'module-card';
+    card.setAttribute('onclick', "openModule('" + mod.id + "')");
+
+    var top = document.createElement('div');
+    top.className = 'module-top';
+
+    var icon = document.createElement('div');
+    icon.className = 'module-icon';
+    icon.style.background = mod.iconBg;
+    icon.textContent = mod.icon;
+
+    var status = document.createElement('span');
+    status.className = completed ? 'module-status status-done' : 'module-status status-new';
+    status.textContent = completed ? '✓ Complete' : 'New';
+
+    top.appendChild(icon);
+    top.appendChild(status);
+
+    var title = document.createElement('div');
+    title.className = 'module-title';
+    title.textContent = mod.title;
+
+    var meta = document.createElement('div');
+    meta.className = 'module-meta';
+    meta.innerHTML = '<span>⏱ ' + mod.duration + '</span><span>🃏 ' + mod.flashcards.length + ' cards</span><span>✏️ ' + mod.quiz.length + ' questions</span>';
+
+    card.appendChild(top);
+    card.appendChild(title);
+    card.appendChild(meta);
+    list.appendChild(card);
+  });
 }
 
 // ── MODULE VIEWER ─────────────────────────────────────────────────────
@@ -1777,8 +1792,11 @@ function showToast(msg) {
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', init);
-init();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 </script>
 </body>
 </html>
